@@ -40,11 +40,11 @@ namespace OpenTK.SpriteManager
         /// <param name="filename">The filename.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(string filename, bool transparent, Vector2<int> origin = null)
+        public Sprite(string filename, bool transparent, Vector2<int> origin)
         {
             Name = filename;
             Transparent = transparent;
-            Origin = origin ?? Vector2.Create(0, 0);
+            Origin = origin;
 
             Id = 0;
             Size = Vector2.Create(0, 0);

@@ -59,7 +59,7 @@ namespace OpenTK.SpriteManager
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
         /// <returns>The new <see cref="Sprite"/>.</returns>
-        public Sprite Load(string filename, bool transparent, Vector2<int> origin = null)
+        public Sprite Load(string filename, bool transparent, Vector2<int> origin)
         {
             // check if this sprite was already loaded
             var sprite = FindSprite(Directory + filename);
@@ -83,7 +83,7 @@ namespace OpenTK.SpriteManager
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
         /// <returns>The new <see cref="Sprite"/>.</returns>
-        public Sprite Load(string filename, bool transparent, Layout origin = Layout.TopLeft)
+        public Sprite Load(string filename, bool transparent, Layout origin)
         {
             // check if this sprite was already loaded
             var sprite = FindSprite(Directory + filename);
