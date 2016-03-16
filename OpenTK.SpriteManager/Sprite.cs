@@ -14,6 +14,22 @@ namespace OpenTK.SpriteManager
     using OpenTK.Graphics.OpenGL;
 
     /// <summary>
+    /// Layout for origin.
+    /// </summary>
+    public enum Layout
+    {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        CenterLeft,
+        Center,
+        CenterRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight
+    }
+
+    /// <summary>
     /// Represents a stored <see cref="Bitmap"/> image.
     /// </summary>
     public struct Sprite : IDisposable
@@ -26,48 +42,65 @@ namespace OpenTK.SpriteManager
         /// <param name="origin">The origin.</param>
         public Sprite(string filename, bool transparent, Vector2<int> origin = null)
         {
+            Name = filename;
             Transparent = transparent;
             Origin = origin ?? Vector2.Create(0, 0);
 
-            // generate the texture id
-            Id = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, Id);
+            Id = 0;
+            Size = Vector2.Create(0, 0);
 
-            using (var bitmap = new Bitmap(SpriteManager.Directory + filename))
-            {
-                // set the size
-                Size = Vector2.Create(bitmap.Width, bitmap.Height);
+            Load(filename);
+        }
 
-                // load the bitmap data
-                var bitmapData = bitmap.LockBits(
-                    new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                    System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                try
-                {
-                    // create the texture
-                    GL.TexImage2D(
-                        TextureTarget.Texture2D,
-                        0,
-                        PixelInternalFormat.Rgba,
-                        Size.X,
-                        Size.Y,
-                        0,
-                        PixelFormat.Bgra,
-                        PixelType.UnsignedByte,
-                        bitmapData.Scan0);
-                }
-                finally
-                {
-                    bitmap.UnlockBits(bitmapData);
-                }
-            }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sprite" /> struct from a file.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
+        /// <param name="origin">The origin.</param>
+        public Sprite(string filename, bool transparent, Layout origin)
+        {
             Name = filename;
+            Transparent = transparent;
+            Origin = Vector2.Create(0, 0);
 
-            // set the texture parameters
-            SetParameters();
+            Id = 0;
+            Size = Vector2.Create(0, 0);
+
+            // load the file
+            Load(filename);
+
+            // change origin according to the layout
+            switch (origin)
+            {
+                case Layout.TopLeft:
+                    Origin = Vector2.Create(0, 0);
+                    break;
+                case Layout.TopCenter:
+                    Origin = Vector2.Create(Size.X / 2, 0);
+                    break;
+                case Layout.TopRight:
+                    Origin = Vector2.Create(Size.X, 0);
+                    break;
+                case Layout.CenterLeft:
+                    Origin = Vector2.Create(0, Size.Y / 2);
+                    break;
+                case Layout.Center:
+                    Origin = Vector2.Create(Size.X / 2, Size.Y / 2);
+                    break;
+                case Layout.CenterRight:
+                    Origin = Vector2.Create(Size.X, Size.Y / 2);
+                    break;
+                case Layout.BottomLeft:
+                    Origin = Vector2.Create(0, Size.Y);
+                    break;
+                case Layout.BottomCenter:
+                    Origin = Vector2.Create(Size.X / 2, Size.Y);
+                    break;
+                case Layout.BottomRight:
+                    Origin = Vector2.Create(Size.X, Size.Y);
+                    break;
+            }
         }
 
         /// <summary>
@@ -116,13 +149,13 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <value>The identifier.</value>
         [JsonIgnore]
-        public int Id { get; }
+        public int Id { get; private set; }
 
         /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name { get; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets the origin.
@@ -136,7 +169,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <value>The size.</value>
         [JsonIgnore]
-        public Vector2<int> Size { get; }
+        public Vector2<int> Size { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Sprite"/> has transparency.
@@ -333,6 +366,53 @@ namespace OpenTK.SpriteManager
         public override string ToString()
         {
             return Id.ToString() + ':' + Name;
+        }
+
+        /// <summary>
+        /// Loads the sprite from the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        private void Load(string filename)
+        {
+            Name = filename;
+
+            // generate the texture id
+            Id = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, Id);
+
+            using (var bitmap = new Bitmap(SpriteManager.Directory + filename))
+            {
+                // set the size
+                Size = Vector2.Create(bitmap.Width, bitmap.Height);
+
+                // load the bitmap data
+                var bitmapData = bitmap.LockBits(
+                    new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                try
+                {
+                    // create the texture
+                    GL.TexImage2D(
+                        TextureTarget.Texture2D,
+                        0,
+                        PixelInternalFormat.Rgba,
+                        Size.X,
+                        Size.Y,
+                        0,
+                        PixelFormat.Bgra,
+                        PixelType.UnsignedByte,
+                        bitmapData.Scan0);
+                }
+                finally
+                {
+                    bitmap.UnlockBits(bitmapData);
+                }
+            }
+
+            // set the texture parameters
+            SetParameters();
         }
 
         /// <summary>

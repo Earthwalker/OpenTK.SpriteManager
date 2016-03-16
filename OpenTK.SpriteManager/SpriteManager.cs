@@ -77,6 +77,30 @@ namespace OpenTK.SpriteManager
         }
 
         /// <summary>
+        /// Loads a new <see cref="Sprite"/> from the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
+        /// <param name="origin">The origin.</param>
+        /// <returns>The new <see cref="Sprite"/>.</returns>
+        public Sprite Load(string filename, bool transparent, Layout origin = Layout.TopLeft)
+        {
+            // check if this sprite was already loaded
+            var sprite = FindSprite(Directory + filename);
+
+            if (sprite != default(Sprite))
+                return sprite;
+
+            // load the sprite
+            sprite = new Sprite(filename, transparent, origin);
+
+            // register the new sprite
+            Register(sprite);
+
+            return sprite;
+        }
+
+        /// <summary>
         /// Finds the sprite with the specified id.
         /// </summary>
         /// <param name="id">The id.</param>
