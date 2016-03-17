@@ -376,7 +376,7 @@ namespace OpenTK.SpriteManager
         private void Load(string filename)
         {
             // ensure file exists
-            if (!File.Exists(filename))
+            if (!File.Exists(SpriteManager.Directory + filename))
                 return;
 
             Name = filename;
