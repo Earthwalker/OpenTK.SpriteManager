@@ -42,6 +42,9 @@
       <HintPath>packages\Epic.Vectors.1.0.4-alpha\lib\net45\Epic.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Epic.Vectors.Utility">
+      <HintPath>..\..\Epic.Vectors.Utility\Epic.Vectors.Utility\bin\Debug\Epic.Vectors.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="Monad, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\csharp-monad.0.0.3\lib\Monad.dll</HintPath>
       <Private>True</Private>
@@ -68,7 +71,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="SpriteManager.cs" />
-    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
