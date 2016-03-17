@@ -9,6 +9,7 @@ namespace OpenTK.SpriteManager
     using System;
     using System.Diagnostics.Contracts;
     using System.Drawing;
+    using System.IO;
     using Epic.Vectors;
     using Newtonsoft.Json;
     using OpenTK.Graphics.OpenGL;
@@ -374,6 +375,10 @@ namespace OpenTK.SpriteManager
         /// <param name="filename">The filename.</param>
         private void Load(string filename)
         {
+            // ensure file exists
+            if (!File.Exists(filename))
+                return;
+
             Name = filename;
 
             // generate the texture id
