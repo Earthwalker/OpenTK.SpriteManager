@@ -13,11 +13,13 @@ namespace OpenTK.SpriteManager
     using Epic.Vectors;
     using Epic.Vectors.Utility;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using OpenTK.Graphics.OpenGL;
 
     /// <summary>
     /// Layout for origin.
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Layout
     {
         TopLeft,
@@ -163,7 +165,6 @@ namespace OpenTK.SpriteManager
         /// Gets the origin.
         /// </summary>
         /// <value>The origin.</value>
-        [JsonIgnore]
         public Vector2<int> Origin { get; }
 
         /// <summary>
@@ -177,7 +178,6 @@ namespace OpenTK.SpriteManager
         /// Gets a value indicating whether this <see cref="Sprite"/> has transparency.
         /// </summary>
         /// <value><c>true</c> if transparent; otherwise, <c>false</c>.</value>
-        [JsonIgnore]
         public bool Transparent { get; }
 
         /// <summary>
