@@ -10,7 +10,6 @@ namespace OpenTK.SpriteManager
     using System.Diagnostics.Contracts;
     using System.Drawing;
     using System.IO;
-    using Epic.Vectors;
     using Epic.Vectors.Utility;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
@@ -44,14 +43,14 @@ namespace OpenTK.SpriteManager
         /// <param name="filename">The filename.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(string filename, bool transparent, Vector2<int> origin)
+        public Sprite(string filename, bool transparent, Vector2 origin)
         {
             Name = filename;
             Transparent = transparent;
             Origin = origin;
 
             Id = 0;
-            Size = Vector2.Create(0, 0);
+            Size = Vector2.Zero;
 
             Load(filename);
         }
@@ -66,10 +65,10 @@ namespace OpenTK.SpriteManager
         {
             Name = filename;
             Transparent = transparent;
-            Origin = Vector2.Create(0, 0);
+            Origin = Vector2.Zero;
 
             Id = 0;
-            Size = Vector2.Create(0, 0);
+            Size = Vector2.Zero;
 
             // load the file
             Load(filename);
@@ -78,31 +77,31 @@ namespace OpenTK.SpriteManager
             switch (origin)
             {
                 case Layout.TopLeft:
-                    Origin = Vector2.Create(0, 0);
+                    Origin = Vector2.Zero;
                     break;
                 case Layout.TopCenter:
-                    Origin = Vector2.Create(Size.X / 2, 0);
+                    Origin = new Vector2(Size.X / 2, 0);
                     break;
                 case Layout.TopRight:
-                    Origin = Vector2.Create(Size.X, 0);
+                    Origin = new Vector2(Size.X, 0);
                     break;
                 case Layout.CenterLeft:
-                    Origin = Vector2.Create(0, Size.Y / 2);
+                    Origin = new Vector2(0, Size.Y / 2);
                     break;
                 case Layout.Center:
-                    Origin = Vector2.Create(Size.X / 2, Size.Y / 2);
+                    Origin = new Vector2(Size.X / 2, Size.Y / 2);
                     break;
                 case Layout.CenterRight:
-                    Origin = Vector2.Create(Size.X, Size.Y / 2);
+                    Origin = new Vector2(Size.X, Size.Y / 2);
                     break;
                 case Layout.BottomLeft:
-                    Origin = Vector2.Create(0, Size.Y);
+                    Origin = new Vector2(0, Size.Y);
                     break;
                 case Layout.BottomCenter:
-                    Origin = Vector2.Create(Size.X / 2, Size.Y);
+                    Origin = new Vector2(Size.X / 2, Size.Y);
                     break;
                 case Layout.BottomRight:
-                    Origin = Vector2.Create(Size.X, Size.Y);
+                    Origin = new Vector2(Size.X, Size.Y);
                     break;
             }
         }
@@ -114,14 +113,13 @@ namespace OpenTK.SpriteManager
         /// <param name="bytes">The bytes.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(Vector2<int> size, byte[] bytes, bool transparent, Vector2<int> origin = null)
+        public Sprite(Vector2 size, byte[] bytes, bool transparent, Vector2 origin = default(Vector2))
         {
             Contract.Requires(Size.X > 0 && Size.Y > 0);
             Contract.Requires(bytes.Length == size.X * (transparent ? size.Y * 4 : size.Y * 3));
 
             Transparent = transparent;
-
-            Origin = origin ?? Vector2.Create(0, 0);
+            Origin = origin;
 
             // generate the texture id
             Id = GL.GenTexture();
@@ -135,8 +133,8 @@ namespace OpenTK.SpriteManager
                 TextureTarget.Texture2D,
                 0,
                 transparent ? PixelInternalFormat.Rgba : PixelInternalFormat.Rgb,
-                Size.X,
-                Size.Y,
+                (int)Size.X,
+                (int)Size.Y,
                 0,
                 transparent ? PixelFormat.Bgra : PixelFormat.Bgr,
                 PixelType.UnsignedByte,
@@ -165,14 +163,14 @@ namespace OpenTK.SpriteManager
         /// Gets the origin.
         /// </summary>
         /// <value>The origin.</value>
-        public Vector2<int> Origin { get; }
+        public Vector2 Origin { get; }
 
         /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>
         [JsonIgnore]
-        public Vector2<int> Size { get; private set; }
+        public Vector2 Size { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Sprite"/> has transparency.
@@ -216,7 +214,7 @@ namespace OpenTK.SpriteManager
         /// Draws this instance at the specified position.
         /// </summary>
         /// <param name="position">The position.</param>
-        public void Draw(Vector2<int> position)
+        public void Draw(Vector2 position)
         {
             Draw(position, Size, Color.White);
         }
@@ -227,11 +225,11 @@ namespace OpenTK.SpriteManager
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="color">The color.</param>
-        public void Draw(Vector2<int> position, float scale, Color color)
+        public void Draw(Vector2 position, float scale, Color color)
         {
             Contract.Requires(scale > 0);
 
-            Draw(position, Size.Multiply(scale), color);
+            Draw(position, Size * scale, color);
         }
 
         /// <summary>
@@ -240,11 +238,11 @@ namespace OpenTK.SpriteManager
         /// <param name="position">The position.</param>
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
-        public void Draw(Vector2<int> position, Vector2<int> size, Color color)
+        public void Draw(Vector2 position, Vector2 size, Color color)
         {
             Contract.Requires(size.X > 0 && Size.Y > 0);
 
-            var drawPosition = position - (Origin * Vector2.Create(size.X / Size.X, size.Y / Size.Y));
+            var drawPosition = position - (Origin * new Vector2(size.X / Size.X, size.Y / Size.Y));
 
             if (color.A < 255 || Transparent)
                 GL.Enable(EnableCap.Blend);
@@ -282,7 +280,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
-        public void DrawRepeated(Vector2<int> start, Vector2<int> end)
+        public void DrawRepeated(Vector2 start, Vector2 end)
         {
             DrawRepeated(start, end, Size, Color.White);
         }
@@ -294,11 +292,11 @@ namespace OpenTK.SpriteManager
         /// <param name="end">The end.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="color">The color.</param>
-        public void DrawRepeated(Vector2<int> start, Vector2<int> end, float scale, Color color)
+        public void DrawRepeated(Vector2 start, Vector2 end, float scale, Color color)
         {
             Contract.Requires(scale > 0);
 
-            DrawRepeated(start, end, Size.Multiply(scale), color);
+            DrawRepeated(start, end, Size * scale, color);
         }
 
         /// <summary>
@@ -308,21 +306,21 @@ namespace OpenTK.SpriteManager
         /// <param name="end">The end.</param>
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
-        public void DrawRepeated(Vector2<int> start, Vector2<int> end, Vector2<int> size, Color color)
+        public void DrawRepeated(Vector2 start, Vector2 end, Vector2 size, Color color)
         {
             Contract.Requires(size.X > 0 && Size.Y > 0);
 
             // calculate position differences
-            var diff = Vector2.Create(end.X - start.X, end.Y - start.Y);
+            var diff = new Vector2(end.X - start.X, end.Y - start.Y);
 
             // calculate number of repeats by find the distance between a zero Vector2 and the
             // position difference
-            var repeats = (int)Math.Round(Vector2.Create(0, 0).Distance(diff / size.X));
+            var repeats = (int)Math.Round(Vector2.Zero.Distance(diff / size.X));
             //// int drawAngle = angle + (int)Math.Round(start.Angle(end));
-            var step = repeats != 0 ? diff / repeats : Vector2.Create(0, 0);
+            var step = repeats != 0 ? diff / repeats : Vector2.Zero;
 
             for (int i = 0; i <= repeats; i++)
-                Draw(start + step.Multiply(i), size, color);
+                Draw(start + step * i, size, color);
         }
 
         /// <summary>
@@ -389,7 +387,7 @@ namespace OpenTK.SpriteManager
             using (var bitmap = new Bitmap(SpriteManager.Directory + filename))
             {
                 // set the size
-                Size = Vector2.Create(bitmap.Width, bitmap.Height);
+                Size = new Vector2(bitmap.Width, bitmap.Height);
 
                 // load the bitmap data
                 var bitmapData = bitmap.LockBits(
@@ -404,8 +402,8 @@ namespace OpenTK.SpriteManager
                         TextureTarget.Texture2D,
                         0,
                         PixelInternalFormat.Rgba,
-                        Size.X,
-                        Size.Y,
+                        (int)Size.X,
+                        (int)Size.Y,
                         0,
                         PixelFormat.Bgra,
                         PixelType.UnsignedByte,

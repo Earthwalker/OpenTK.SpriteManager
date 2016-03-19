@@ -8,7 +8,6 @@ namespace OpenTK.SpriteManager
 {
     using System;
     using System.Collections.Generic;
-    using Epic.Vectors;
 
     /// <summary>
     /// Manages the <see cref="Sprite"/> s used by the application.
@@ -59,7 +58,7 @@ namespace OpenTK.SpriteManager
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
         /// <returns>The new <see cref="Sprite"/>.</returns>
-        public Sprite Load(string filename, bool transparent, Vector2<int> origin)
+        public Sprite Load(string filename, bool transparent, Vector2 origin)
         {
             // check if this sprite was already loaded
             var sprite = FindSprite(Directory + filename);
