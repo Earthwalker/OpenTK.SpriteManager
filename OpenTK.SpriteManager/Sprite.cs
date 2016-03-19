@@ -10,7 +10,6 @@ namespace OpenTK.SpriteManager
     using System.Diagnostics.Contracts;
     using System.Drawing;
     using System.IO;
-    using Epic.Vectors.Utility;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using OpenTK.Graphics.OpenGL;
