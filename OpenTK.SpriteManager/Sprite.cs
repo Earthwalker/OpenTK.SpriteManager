@@ -116,7 +116,7 @@ namespace OpenTK.SpriteManager
         public Sprite(Vector2 size, byte[] bytes, bool transparent, Vector2 origin = default(Vector2))
         {
             Contract.Requires(Size.X > 0 && Size.Y > 0);
-            Contract.Requires(bytes.Length == size.X * (transparent ? size.Y * 4 : size.Y * 3));
+            Contract.Requires(bytes.Length == (int)size.X * (transparent ? (int)size.Y * 4 : (int)size.Y * 3));
 
             Transparent = transparent;
             Origin = origin;
