@@ -100,16 +100,16 @@ namespace OpenTK.SpriteManager
         public int Id { get; private set; }
 
         /// <summary>
-        /// Gets the name.
+        /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the origin.
+        /// Gets or sets the origin.
         /// </summary>
         /// <value>The origin.</value>
-        public Layout Origin { get; }
+        public Layout Origin { get; set; }
 
         /// <summary>
         /// Gets the size.
@@ -119,10 +119,10 @@ namespace OpenTK.SpriteManager
         public Vector2 Size { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="Sprite"/> has transparency.
+        /// Gets or set a value indicating whether this <see cref="Sprite"/> has transparency.
         /// </summary>
         /// <value><c>true</c> if transparent; otherwise, <c>false</c>.</value>
-        public bool Transparent { get; }
+        public bool Transparent { get; set; }
 
         /// <summary>
         /// Implements the operator !=.
