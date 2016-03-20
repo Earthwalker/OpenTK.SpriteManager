@@ -37,12 +37,12 @@ namespace OpenTK.SpriteManager
     public struct Sprite : IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite"/> struct from a file.
+        /// Initializes a new instance of the <see cref="Sprite" /> struct from a file.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(string filename, bool transparent, Vector2 origin)
+        public Sprite(string filename, bool transparent, Layout origin)
         {
             Name = filename;
             Transparent = transparent;
@@ -53,61 +53,13 @@ namespace OpenTK.SpriteManager
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite" /> struct from a file.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
-        /// <param name="origin">The origin.</param>
-        public Sprite(string filename, bool transparent, Layout origin)
-        {
-            Name = filename;
-            Transparent = transparent;
-            Origin = Vector2.Zero;
-
-            Id = 0;
-            Size = Vector2.Zero;
-
-            // change origin according to the layout
-            switch (origin)
-            {
-                case Layout.TopLeft:
-                    Origin = Vector2.Zero;
-                    break;
-                case Layout.TopCenter:
-                    Origin = new Vector2(Size.X / 2, 0);
-                    break;
-                case Layout.TopRight:
-                    Origin = new Vector2(Size.X, 0);
-                    break;
-                case Layout.CenterLeft:
-                    Origin = new Vector2(0, Size.Y / 2);
-                    break;
-                case Layout.Center:
-                    Origin = new Vector2(Size.X / 2, Size.Y / 2);
-                    break;
-                case Layout.CenterRight:
-                    Origin = new Vector2(Size.X, Size.Y / 2);
-                    break;
-                case Layout.BottomLeft:
-                    Origin = new Vector2(0, Size.Y);
-                    break;
-                case Layout.BottomCenter:
-                    Origin = new Vector2(Size.X / 2, Size.Y);
-                    break;
-                case Layout.BottomRight:
-                    Origin = new Vector2(Size.X, Size.Y);
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> struct from a byte array.
         /// </summary>
         /// <param name="size">The size.</param>
         /// <param name="bytes">The bytes.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(Vector2 size, byte[] bytes, bool transparent, Vector2 origin = default(Vector2))
+        public Sprite(Vector2 size, byte[] bytes, bool transparent, Layout origin)
         {
             Contract.Requires(Size.X > 0 && Size.Y > 0);
             Contract.Requires(bytes.Length == (int)size.X * (transparent ? (int)size.Y * 4 : (int)size.Y * 3));
@@ -151,13 +103,13 @@ namespace OpenTK.SpriteManager
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets the origin.
         /// </summary>
         /// <value>The origin.</value>
-        public Vector2 Origin { get; }
+        public Layout Origin { get; }
 
         /// <summary>
         /// Gets the size.
@@ -236,7 +188,7 @@ namespace OpenTK.SpriteManager
         {
             Contract.Requires(size.X > 0 && Size.Y > 0);
 
-            var drawPosition = position - (Origin * new Vector2(size.X / Size.X, size.Y / Size.Y));
+            var drawPosition = position - (Origin.ToVector2() * size);
 
             if (color.A < 255 || Transparent)
                 GL.Enable(EnableCap.Blend);
