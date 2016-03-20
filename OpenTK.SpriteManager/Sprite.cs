@@ -50,8 +50,6 @@ namespace OpenTK.SpriteManager
 
             Id = 0;
             Size = Vector2.Zero;
-
-            Load(filename);
         }
 
         /// <summary>
@@ -68,9 +66,6 @@ namespace OpenTK.SpriteManager
 
             Id = 0;
             Size = Vector2.Zero;
-
-            // load the file
-            Load(filename);
 
             // change origin according to the layout
             switch (origin)
@@ -368,22 +363,19 @@ namespace OpenTK.SpriteManager
         }
 
         /// <summary>
-        /// Loads the sprite from the specified filename.
+        /// Loads the sprite.
         /// </summary>
-        /// <param name="filename">The filename.</param>
-        private void Load(string filename)
+        public void Load()
         {
             // ensure file exists
-            if (!File.Exists(SpriteManager.Directory + filename))
+            if (!File.Exists(SpriteManager.Directory + Name))
                 return;
-
-            Name = filename;
 
             // generate the texture id
             Id = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, Id);
 
-            using (var bitmap = new Bitmap(SpriteManager.Directory + filename))
+            using (var bitmap = new Bitmap(SpriteManager.Directory + Name))
             {
                 // set the size
                 Size = new Vector2(bitmap.Width, bitmap.Height);
