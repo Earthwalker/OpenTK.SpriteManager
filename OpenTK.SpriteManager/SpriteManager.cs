@@ -24,7 +24,7 @@ namespace OpenTK.SpriteManager
         /// Gets the sprite directory.
         /// </summary>
         /// <value>The sprite directory.</value>
-        public static string Directory { get; } = Environment.CurrentDirectory + "\\Textures\\";
+        public static string Directory { get; } = Environment.CurrentDirectory + "\\Sprites\\";
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting
@@ -53,7 +53,7 @@ namespace OpenTK.SpriteManager
         /// <returns>The sprite.</returns>
         public static Sprite FindSprite(string name)
         {
-            return sprites.Find(t => t.Name == name);
+            return sprites.Find(s => s.Name == name);
         }
 
         /// <summary>

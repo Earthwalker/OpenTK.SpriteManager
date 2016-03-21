@@ -284,13 +284,13 @@ namespace OpenTK.SpriteManager
         /// <summary>
         /// Determines whether the specified <see cref="Sprite"/>, is equal to this instance.
         /// </summary>
-        /// <param name="texture">The <see cref="Sprite"/> to compare with this instance.</param>
+        /// <param name="sprite">The <see cref="Sprite"/> to compare with this instance.</param>
         /// <returns>
         /// <c>true</c> if the specified <see cref="Sprite"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(Sprite texture)
+        public bool Equals(Sprite sprite)
         {
-            return Id.Equals(texture.Id);
+            return Id.Equals(sprite.Id);
         }
 
         /// <summary>
