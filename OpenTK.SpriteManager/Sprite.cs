@@ -323,6 +323,14 @@ namespace OpenTK.SpriteManager
             if (!File.Exists(SpriteManager.Directory + Name))
                 return;
 
+            // check if this sprite was already loaded
+            if (!SpriteManager.Register(this))
+            {
+                // set the id to the previously loaded one's
+                Id = SpriteManager.FindSprite(Name).Id;
+                return;
+            }
+
             // generate the texture id
             Id = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, Id);

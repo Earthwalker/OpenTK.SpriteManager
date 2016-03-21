@@ -8,16 +8,17 @@ namespace OpenTK.SpriteManager
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Manages the <see cref="Sprite"/> s used by the application.
     /// </summary>
-    public class SpriteManager : IDisposable
+    public static class SpriteManager
     {
         /// <summary>
         /// The sprites.
         /// </summary>
-        private readonly List<Sprite> sprites = new List<Sprite>();
+        private static readonly List<Sprite> sprites = new List<Sprite>();
 
         /// <summary>
         /// Gets the sprite directory.
@@ -29,50 +30,10 @@ namespace OpenTK.SpriteManager
         /// Performs application-defined tasks associated with freeing, releasing, or resetting
         /// unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public static void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="managed">
-        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release
-        /// only unmanaged resources.
-        /// </param>
-        public void Dispose(bool managed)
-        {
-            if (managed)
-            {
-                foreach (var sprite in sprites)
-                    sprite.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Loads a new <see cref="Sprite"/> from the specified filename.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
-        /// <param name="origin">The origin.</param>
-        /// <returns>The new <see cref="Sprite"/>.</returns>
-        public Sprite Load(string filename, bool transparent, Layout origin)
-        {
-            // check if this sprite was already loaded
-            var sprite = FindSprite(Directory + filename);
-
-            if (sprite != default(Sprite))
-                return sprite;
-
-            // load the sprite
-            sprite = new Sprite(filename, transparent, origin);
-
-            // register the new sprite
-            Register(sprite);
-
-            return sprite;
+            foreach (var sprite in sprites)
+                sprite.Dispose();
         }
 
         /// <summary>
@@ -80,7 +41,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <param name="id">The id.</param>
         /// <returns>The sprite.</returns>
-        public Sprite FindSprite(int id)
+        public static Sprite FindSprite(int id)
         {
             return sprites.Find(t => t.Id == id);
         }
@@ -90,7 +51,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>The sprite.</returns>
-        public Sprite FindSprite(string name)
+        public static Sprite FindSprite(string name)
         {
             return sprites.Find(t => t.Name == name);
         }
@@ -99,23 +60,26 @@ namespace OpenTK.SpriteManager
         /// Registers the specified sprite.
         /// </summary>
         /// <param name="sprite">The sprite.</param>
-        public void Register(Sprite sprite)
+        /// <returns>Whether this was the first sprite of the name to be registered.</returns>
+        public static bool Register(Sprite sprite)
         {
             if (!sprites.Contains(sprite))
                 sprites.Add(sprite);
+
+            return sprites.Count(s => s.Name == sprite.Name) == 1;
         }
 
         /// <summary>
         /// Unregisters the specified sprite.
         /// </summary>
         /// <param name="sprite">The sprite.</param>
-        /// <param name="dispose">if set to <c>true</c> dispose the sprite.</param>
-        public void Unregister(Sprite sprite, bool dispose = true)
+        public static void Unregister(Sprite sprite)
         {
+            // remove the sprite from the collection
             sprites.Remove(sprite);
 
-            if (dispose)
-                sprite.Dispose();
+            // dispose of the sprite
+            sprite.Dispose();
         }
     }
 }
