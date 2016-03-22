@@ -39,13 +39,14 @@ namespace OpenTK.SpriteManager
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> struct from a file.
         /// </summary>
-        /// <param name="filename">The filename.</param>
+        /// <param name="name">The name.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
         /// <param name="imageNumber">The image number.</param>
-        public Sprite(string filename, bool transparent, Layout origin, Vector2 imageNumber = new Vector2())
+        [JsonConstructor]
+        public Sprite(string name, bool transparent, Layout origin, Vector2 imageNumber = new Vector2())
         {
-            Name = filename;
+            Name = name;
             Transparent = transparent;
             Origin = origin;
             ImageNumber = Vector2.Max(Vector2.One, imageNumber);
@@ -124,13 +125,13 @@ namespace OpenTK.SpriteManager
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets or sets the origin.
         /// </summary>
         /// <value>The origin.</value>
-        public Layout Origin { get; set; }
+        public Layout Origin { get; }
 
         /// <summary>
         /// Gets or sets the number of images contained in this sprite.
