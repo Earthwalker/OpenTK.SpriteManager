@@ -53,6 +53,9 @@ namespace OpenTK.SpriteManager
             Id = 0;
             ImageIndex = Vector2.Zero;
             Size = Vector2.Zero;
+
+            // load the sprite
+            Load();
         }
 
         /// <summary>
