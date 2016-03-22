@@ -94,6 +94,9 @@ namespace OpenTK.SpriteManager
 
             Name = "Generated";
 
+            // register the sprite
+            SpriteManager.Register(this);
+
             // set the texture parameters
             SetParameters();
         }
@@ -348,10 +351,12 @@ namespace OpenTK.SpriteManager
                 return;
 
             // check if this sprite was already loaded
-            if (!SpriteManager.Register(this))
+            var id = SpriteManager.FindSprite(Name).Id;
+
+            if (id != 0)
             {
                 // set the id to the previously loaded one's
-                Id = SpriteManager.FindSprite(Name).Id;
+                Id = id;
                 return;
             }
 
@@ -389,6 +394,9 @@ namespace OpenTK.SpriteManager
                     bitmap.UnlockBits(bitmapData);
                 }
             }
+
+            // register the sprite
+            SpriteManager.Register(this);
 
             // set the texture parameters
             SetParameters();

@@ -60,13 +60,10 @@ namespace OpenTK.SpriteManager
         /// Registers the specified sprite.
         /// </summary>
         /// <param name="sprite">The sprite.</param>
-        /// <returns>Whether this was the first sprite of the name to be registered.</returns>
-        public static bool Register(Sprite sprite)
+        public static void Register(Sprite sprite)
         {
             if (!sprites.Contains(sprite))
                 sprites.Add(sprite);
-
-            return sprites.Count(s => s.Name == sprite.Name) == 1;
         }
 
         /// <summary>
