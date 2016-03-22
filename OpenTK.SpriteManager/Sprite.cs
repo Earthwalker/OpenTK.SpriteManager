@@ -106,7 +106,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <value>The identifier.</value>
         [JsonIgnore]
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the index of the image.
@@ -143,7 +143,7 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <value>The size.</value>
         [JsonIgnore]
-        public Vector2 Size { get; private set; }
+        public Vector2 Size { get; set; }
 
         /// <summary>
         /// Gets or set a value indicating whether this <see cref="Sprite"/> has transparency.
