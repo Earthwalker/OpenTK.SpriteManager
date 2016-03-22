@@ -42,30 +42,36 @@ namespace OpenTK.SpriteManager
         /// <param name="filename">The filename.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(string filename, bool transparent, Layout origin)
+        /// <param name="imageNumber">The image number.</param>
+        public Sprite(string filename, bool transparent, Layout origin, Vector2 imageNumber = new Vector2())
         {
             Name = filename;
             Transparent = transparent;
             Origin = origin;
+            ImageNumber = Vector2.Max(Vector2.One, imageNumber);
 
             Id = 0;
+            ImageIndex = Vector2.Zero;
             Size = Vector2.Zero;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite"/> struct from a byte array.
+        /// Initializes a new instance of the <see cref="Sprite" /> struct from a byte array.
         /// </summary>
         /// <param name="size">The size.</param>
         /// <param name="bytes">The bytes.</param>
         /// <param name="transparent">if set to <c>true</c> uses transparency.</param>
         /// <param name="origin">The origin.</param>
-        public Sprite(Vector2 size, byte[] bytes, bool transparent, Layout origin)
+        /// <param name="imageNumber">The image number.</param>
+        public Sprite(Vector2 size, byte[] bytes, bool transparent, Layout origin, Vector2 imageNumber = new Vector2())
         {
             Contract.Requires(Size.X > 0 && Size.Y > 0);
             Contract.Requires(bytes.Length == (int)size.X * (transparent ? (int)size.Y * 4 : (int)size.Y * 3));
 
             Transparent = transparent;
             Origin = origin;
+            ImageNumber = Vector2.Max(Vector2.One, imageNumber);
+            ImageIndex = Vector2.Zero;
 
             // generate the texture id
             Id = GL.GenTexture();
@@ -79,8 +85,8 @@ namespace OpenTK.SpriteManager
                 TextureTarget.Texture2D,
                 0,
                 transparent ? PixelInternalFormat.Rgba : PixelInternalFormat.Rgb,
-                (int)Size.X,
-                (int)Size.Y,
+                (int)(Size.X * ImageNumber.X),
+                (int)(Size.Y * ImageNumber.Y),
                 0,
                 transparent ? PixelFormat.Bgra : PixelFormat.Bgr,
                 PixelType.UnsignedByte,
@@ -100,6 +106,15 @@ namespace OpenTK.SpriteManager
         public int Id { get; private set; }
 
         /// <summary>
+        /// Gets or sets the index of the image.
+        /// </summary>
+        /// <value>
+        /// The index of the image.
+        /// </value>
+        [JsonIgnore]
+        public Vector2 ImageIndex { get; set; }
+
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
@@ -110,6 +125,15 @@ namespace OpenTK.SpriteManager
         /// </summary>
         /// <value>The origin.</value>
         public Layout Origin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of images contained in this sprite.
+        /// </summary>
+        /// <value>
+        /// The number of images.
+        /// </value>
+        [JsonConverter(typeof(Vector2Converter))]
+        public Vector2 ImageNumber { get; set; }
 
         /// <summary>
         /// Gets the size.
@@ -338,7 +362,7 @@ namespace OpenTK.SpriteManager
             using (var bitmap = new Bitmap(SpriteManager.Directory + Name))
             {
                 // set the size
-                Size = new Vector2(bitmap.Width, bitmap.Height);
+                Size = new Vector2(bitmap.Width / ImageNumber.X, bitmap.Height / ImageNumber.Y);
 
                 // load the bitmap data
                 var bitmapData = bitmap.LockBits(
@@ -353,8 +377,8 @@ namespace OpenTK.SpriteManager
                         TextureTarget.Texture2D,
                         0,
                         PixelInternalFormat.Rgba,
-                        (int)Size.X,
-                        (int)Size.Y,
+                        bitmap.Height,
+                        (int)(Size.Y * ImageNumber.Y),
                         0,
                         PixelFormat.Bgra,
                         PixelType.UnsignedByte,
